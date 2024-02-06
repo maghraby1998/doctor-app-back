@@ -1,0 +1,14 @@
+POST http://localhost:5000/auth/sign-in
+content-type: application/json
+
+{
+    "email":"maghraby1998@gmail.com",
+    "password": "123456789"
+}
+
+###
+GET http://localhost:5000/company/my-companies
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzA3MDY1ODUwLCJleHAiOjE3MDcwNjk0NTB9.gU-1SHaDcqd3-ywNzDusnzxW_tUhujsQ-aNCZ91ySlQ
+
+

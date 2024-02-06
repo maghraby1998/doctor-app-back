@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int           @id @default(autoincrement())
+  name            String
+  email           String        @unique
+  password        String
+  isEmailVerified Int           @default(0)
+  UserCompanys    UserCompany[]
+  UserOffices     UserOffice[]
+
+  @@map("users")
+}
+
+model Company {
+  id           Int           @id @default(autoincrement())
+  name         String
+  offices      Office[]
+  UserCompanys UserCompany[]
+
+  @@map("companies")
+}
+
+model UserCompany {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+  isManager Boolean @default(false)
+
+  @@map("user_company")
+}
+
+model Office {
+  id                     Int                     @id @default(autoincrement())
+  name                   String
+  company                Company                 @relation(fields: [companyId], references: [id])
+  companyId              Int
+  WorkHourConfigurations WorkHourConfiguration[]
+  UserOffices            UserOffice[]
+  Appointments           Appointment[]
+  weekends               String
+
+  @@map("offices")
+}
+
+model UserOffice {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
+  officeId Int
+  office   Office @relation(fields: [officeId], references: [id])
+
+  @@map("user_office")
+}
+
+model WorkHourConfiguration {
+  id                                Int      @id @default(autoincrement())
+  start                             DateTime
+  end                               DateTime
+  officeId                          Int
+  office                            Office   @relation(fields: [officeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  estimatedAppointmentTimeAsMinutes Int
+  created_at                        DateTime @default(now())
+  updated_at                        DateTime @default(now())
+
+  @@map("work_hour_configurations")
+}
+
+model Appointment {
+  id       Int      @id @default(autoincrement())
+  start    DateTime
+  end      DateTime
+  officeId Int
+  office   Office   @relation(fields: [officeId], references: [id])
+  notes    String
+
+  @@map("appointments")
+}
